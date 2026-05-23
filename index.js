@@ -11,8 +11,18 @@ const port = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || "apex-rent-jwt-secret-change-in-production";
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
 
+const allowedOrigins = process.env.CLIENT_URL 
+  ? process.env.CLIENT_URL.split(',').map(url => url.trim())
+  : ["http://localhost:3000", "http://localhost:5000", "https://apex-rent.onrender.com"];
+
 const corsOptions = {
-  origin: CLIENT_URL,
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 };
 
