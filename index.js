@@ -43,15 +43,11 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
-async function run() {
-  try {
-    await client.connect();
+const db = client.db("apexRentDB");
+const carsCollection = db.collection("cars");
+const bookingsCollection = db.collection("bookings");
 
-    const db = client.db("apexRentDB");
-    const carsCollection = db.collection("cars");
-    const bookingsCollection = db.collection("bookings");
-
-    app.get("/cars", async (req, res) => {
+app.get("/cars", async (req, res) => {
       try {
         const { search, type } = req.query;
         const query = {};
@@ -239,9 +235,10 @@ async function run() {
       }
     });
 
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!",
-    );
+async function run() {
+  try {
+    await client.connect();
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } catch (error) {
     console.dir(error);
   }
@@ -255,3 +252,5 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+
